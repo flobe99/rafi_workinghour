@@ -1,0 +1,43 @@
+name: RAFI_Workinghours
+description: Calculate your RAFI Workinghours
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: '>=3.1.5 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  path_provider: ^2.1.1
+  flutter_launcher_icons: ^0.13.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+  msix: ^3.16.7
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/RAFI_logo.png
+
+flutter_icons:
+  android: true  
+  ios: true  
+  windows: 
+    generate: true
+    image_path: "assets/RAFI_logo.png"
+    icon_size: 48
+  image_path: "assets/RAFI_logo.png"  
+  adaptive_icon_background: "assets/RAFI_logo.png"  
+  adaptive_icon_foreground: "assets/RAFI_logo.png" 
+
+msix_config:
+  display_name: Workinghours
+  publisher_display_name: Florian Betz
+  identity_name: company.suite.flutterapp
+  msix_version: 1.0.0.0
+  logo_path: C:\Development\99_Experience\rafi_workinghour\assets\RAFI_logo.png
