@@ -142,6 +142,8 @@ class _Overview extends State<Overview> {
 
       int _timeDiff = check_out_minutes - working_hours_minutes;
 
+      _timeDiff = reduce_break(_timeDiff);
+
       int _hr = _timeDiff ~/ 60;
       int _minute = (_timeDiff - (_hr * 60));
 
