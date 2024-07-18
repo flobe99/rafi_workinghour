@@ -21,7 +21,8 @@ class TimeApi {
   void createJsonFile() {
     Map<String, dynamic> content = {
       "RefreshmentBreak": "00:15",
-      "LunchBreak": "00:30"
+      "LunchBreak": "00:30",
+      "WorkingHour": "00:36"
     };
     getApplicationDocumentsDirectory().then((Directory directory) {
       this.dir = directory;
@@ -44,32 +45,39 @@ class TimeApi {
     return _model;
   }
 
-  void setTime(RefreshmentBreak, LunchBreak) {
+  void setTime(RefreshmentBreak, LunchBreak, WorkingHour) {
     File file = new File(dir.path + "/" + fileName);
     var data = json.decode(file.readAsStringSync());
     data["RefreshmentBreak"] = RefreshmentBreak;
     data["LunchBreak"] = LunchBreak;
+    data["WorkingHour"] = WorkingHour;
     file.writeAsStringSync(json.encode(data));
     //file.writeAsStringSync(json.encode({"RefreshmentBreak": RefreshmentBreak, "LunchBreak": LunchBreak}));
   }
 }
 
 class Time {
-  Time({required this.RefreshmentBreak, required this.LunchBreak});
+  Time(
+      {required this.RefreshmentBreak,
+      required this.LunchBreak,
+      required this.WorkingHour});
 
   String RefreshmentBreak;
   String LunchBreak;
+  String WorkingHour;
 
   factory Time.fromJson(json) {
     return Time(
       RefreshmentBreak:
           json['RefreshmentBreak'] is String ? json['RefreshmentBreak'] : "",
       LunchBreak: json['LunchBreak'] is String ? json['LunchBreak'] : "",
+      WorkingHour: json['WorkingHour'] is String ? json['WorkingHour'] : "",
     );
   }
 
   Map<String, dynamic> toJson() => {
         'RefreshmentBreak': RefreshmentBreak,
         'LunchBreak': LunchBreak,
+        'WorkingHour': WorkingHour
       };
 }

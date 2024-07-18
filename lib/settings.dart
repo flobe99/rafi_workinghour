@@ -14,11 +14,14 @@ class Settings extends StatefulWidget {
 class _Settings extends State<Settings> {
   TextEditingController _controller_Refreshment_break = TextEditingController();
   TextEditingController _controller_Lunch_break = TextEditingController();
+  TextEditingController _controller_Working_Hour = TextEditingController();
 
   int refreshmentbreak_hours = 0;
   int refreshmentbreak_minutes = 15;
   int lunchbreak_hours = 0;
   int lunchbreak_minutes = 30;
+  int workinghour_hours = 0;
+  int workinghour_minutes = 30;
   late Time data;
 
   @override
@@ -27,10 +30,13 @@ class _Settings extends State<Settings> {
     Time data = widget.timeApi!.getTime();
     _controller_Refreshment_break.text = data.RefreshmentBreak;
     _controller_Lunch_break.text = data.LunchBreak;
+    _controller_Working_Hour.text = data.WorkingHour;
     refreshmentbreak_hours = int.parse(data.RefreshmentBreak.split(":")[0]);
     refreshmentbreak_minutes = int.parse(data.RefreshmentBreak.split(":")[1]);
     lunchbreak_hours = int.parse(data.LunchBreak.split(":")[0]);
     lunchbreak_minutes = int.parse(data.LunchBreak.split(":")[1]);
+    workinghour_hours = int.parse(data.WorkingHour.split(":")[0]);
+    workinghour_minutes = int.parse(data.WorkingHour.split(":")[1]);
   }
 
   @override
@@ -110,21 +116,56 @@ class _Settings extends State<Settings> {
                   }
                 },
               ),
-              ElevatedButton(
-                style: ButtonStyle(
-                  foregroundColor: MaterialStateProperty.all<Color>(
-                      Color.fromRGBO(255, 255, 255, 1)),
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                      Color.fromRGBO(0, 52, 66, 1)),
+              GestureDetector(
+                child: TextField(
+                  controller: _controller_Working_Hour,
+                  keyboardType: TextInputType.number,
+                  obscureText: false,
+                  decoration: InputDecoration(labelText: "Working Hour"),
+                  readOnly: true,
                 ),
-                onPressed: () async {
-                  //writeToFile(_controller_Refreshment_break.text, _controller_Lunch_break.text);
-                  widget.timeApi?.setTime(_controller_Refreshment_break.text,
-                      _controller_Lunch_break.text);
-                  Navigator.pop(context);
+                onDoubleTap: () async {
+                  TimeOfDay? picked = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay(
+                        hour: workinghour_hours, minute: workinghour_minutes),
+                    builder: (BuildContext context, Widget? child) {
+                      return MediaQuery(
+                        data: MediaQuery.of(context)
+                            .copyWith(alwaysUse24HourFormat: true),
+                        child: child!,
+                      );
+                    },
+                  );
+                  if (picked != null) {
+                    String formattedTime =
+                        '${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}';
+                    setState(() {
+                      _controller_Working_Hour.text = formattedTime;
+                    });
+                  }
                 },
-                child: Text("Save"),
-              )
+              ),
+              Container(
+                margin: EdgeInsets.all(10),
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    foregroundColor: MaterialStateProperty.all<Color>(
+                        Color.fromRGBO(255, 255, 255, 1)),
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        Color.fromRGBO(0, 52, 66, 1)),
+                  ),
+                  onPressed: () async {
+                    //writeToFile(_controller_Refreshment_break.text, _controller_Lunch_break.text);
+                    widget.timeApi?.setTime(
+                        _controller_Refreshment_break.text,
+                        _controller_Lunch_break.text,
+                        _controller_Working_Hour.text);
+                    Navigator.pop(context);
+                  },
+                  child: Text("Save"),
+                ),
+              ),
             ],
           ),
         ),

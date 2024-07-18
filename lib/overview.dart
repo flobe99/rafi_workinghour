@@ -14,6 +14,8 @@ class _Overview extends State<Overview> {
   late bool isChecked;
   int refreshmentbreak_minutes = 15;
   int lunchbreak_minutes = 30;
+  int workinghour_minutes = 0;
+  int workinghour_hours = 0;
 
   TimeApi timeApi = new TimeApi();
 
@@ -31,9 +33,9 @@ class _Overview extends State<Overview> {
   void initState() {
     super.initState();
     isChecked = true;
-    TimeOfDay checkInTime = TimeOfDay?.now();
+    TimeOfDay checkOutTime = TimeOfDay?.now();
     String formattedTime =
-        '${checkInTime.hour.toString().padLeft(2, '0')}:${checkInTime.minute.toString().padLeft(2, '0')}';
+        '${checkOutTime.hour.toString().padLeft(2, '0')}:${checkOutTime.minute.toString().padLeft(2, '0')}';
     _controller_Check_IN.text = "07:00";
     _controller_Check_OUT.text = formattedTime;
     _controller_Working_Hour.text = "";
@@ -60,6 +62,8 @@ class _Overview extends State<Overview> {
             int.parse(data.RefreshmentBreak.substring(3, 5));
     this.lunchbreak_minutes = int.parse(data.LunchBreak.substring(0, 2)) * 60 +
         int.parse(data.LunchBreak.substring(3, 5));
+    this.workinghour_hours = int.parse(data.WorkingHour.substring(0, 2));
+    this.workinghour_minutes = int.parse(data.WorkingHour.substring(3, 5));
   }
 
   Widget _buildPopupDialog(BuildContext context, String pText) {
@@ -301,11 +305,12 @@ class _Overview extends State<Overview> {
                   ),
                 ),
                 onDoubleTap: () async {
+                  readJson();
                   FocusScope.of(context).requestFocus(new FocusNode());
-
                   TimeOfDay? picked = await showTimePicker(
                     context: context,
-                    initialTime: TimeOfDay(hour: 7, minute: 36),
+                    initialTime: TimeOfDay(
+                        hour: workinghour_hours, minute: workinghour_minutes),
                     builder: (BuildContext context, Widget? child) {
                       return MediaQuery(
                         data: MediaQuery.of(context)
